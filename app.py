@@ -8,19 +8,21 @@ import config
 
 app = Flask(__name__)
 
-# Host name
-_page_title = platform.node()
-_main_title = f"{_page_title} GPU Status".upper()
-
 
 @app.route("/")
 def index():
     # Datetime
-    dt = datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y")
+    dt_str = datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y")
+
+    # Host name
+    page_title = platform.node()
+    main_title = f"{page_title} GPU Status".upper()
+
     return render_template(
         "index.html",
-        page_title=_page_title,
-        ur_text=dt,
+        page_title=page_title,
+        main_title=main_title,
+        datetime_str=dt_str,
         copyright_text=config.conf["copyright_text"],
     )
 
@@ -29,7 +31,7 @@ def index():
 def status():
 
     # Datetime
-    dt = datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y")
+    dt_str = datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y")
 
     # Get GPUs
     gpu_objects_dict, err_infos = get_gpus()
@@ -51,22 +53,19 @@ def status():
         # Set gloabl index
         proc_info_list[i].global_index = i
 
-    return render_template(
-        "status.html",
-        main_title=_main_title,
-        ur_text=dt,
-        driver_version=driver_version,
-        cuda_version=cuda_version,
-        gpu_info_list=gpu_info_list,
-        proc_info_list=proc_info_list,
-        err_infos=err_infos,
-    )
+    return_data = {
+        "interval": config.conf["interval_ms"],
+        "datetime_str": dt_str,
+        "main_content" : render_template("status.html",
+                                driver_version=driver_version,
+                                cuda_version=cuda_version,
+                                gpu_info_list=gpu_info_list,
+                                proc_info_list=proc_info_list,
+                                err_infos=err_infos)
+    }
 
+    return json.dumps(return_data)
 
-@app.route("/interval", methods=["POST"])
-def interval():
-    conf = {"value": config.conf["interval_ms"]}
-    return json.dumps(conf)
 
 
 if __name__ == "__main__":

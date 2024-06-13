@@ -57,16 +57,17 @@
         <div class="wrapper">
             <div id="status_content" class="content">
                 <div style="width: 90%; margin: 0 auto;  min-width: 200px;">
-                    <!-- Upper Right Text -->
-                    <div  style="font-size: 14px;
+                    <!-- Datetime -->
+                    <div  id="datetime_str"
+                        style="font-size: 14px;
                         color: #163367;
                         text-align: right;
                         padding-top:20px;
                         padding-right: 20px;
                         padding-bottom: 10px;">
-                        {{ur_text}}
+                        {{datetime_str}}
                     </div>
-                    <!-- Upper Right Text -->
+                    <!-- Datetime -->
                     <!-- Start Blue Title -->
                     <div style="padding: 15px 25px;
                         border-top-left-radius: 10px;
@@ -76,19 +77,21 @@
                         overflow: hidden;
                         line-height: 32px;
                         ">
-                        <span style="font-size: 18px;font-weight: bold;"> Loading Data...</span>
+                        <span id="main_title_loading" style="font-size: 18px;font-weight: bold; display: block;"> Loading Data ...</span>
+                        <span id="main_title_text" style="font-size: 18px;font-weight: bold; display: none;">{{main_title}}</span>
                     </div>
-                    <!-- Start rect -->
-                    <div style="border-bottom-left-radius: 10px;
+                    <!-- Start tables -->
+                    <div id="main_content"
+                        style="border-bottom-left-radius: 10px;
                         border-bottom-right-radius: 10px;
                         border:1px solid #ddd;
                         overflow: hidden;
-                        padding: 50px 15px 50px 30px; 
-                        text-align: center;
-                        ">
-                        <div class="loader"><div class="ball-pulse"><div></div><div></div><div></div><div></div></div></div>
+                        padding: 15px 15px 20px; ">
+                        <div style="width: 100%; padding: 50px 15px 50px 30px; text-align: center;">
+                            <div class="loader"><div class="ball-pulse"><div></div><div></div><div></div><div></div></div></div>
+                        </div>
                     </div>
-                    <!-- End rect -->
+                    <!-- End tables -->
                 </div>
             </div>
             <!-- Footer-->

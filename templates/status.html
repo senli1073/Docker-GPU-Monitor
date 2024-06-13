@@ -1,111 +1,89 @@
-<div  style="width: 90%; margin: 0 auto;  min-width: 200px;">
-    <!-- Upper Right Text -->
-    <div  style="font-size: 14px;
-        color: #163367;
-        text-align: right;
-        padding-top:20px;
-        padding-right: 20px;
-        padding-bottom: 10px;">
-        {{ur_text}}
+
+<!-- Start tables -->
+<div style="border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border:1px solid #ddd;
+    overflow: hidden;
+    padding: 15px 15px 20px; ">
+    <h2>GPUs:</h2>
+    <div style="overflow-x: auto;">
+        <table>
+            <tr>
+                <th colspan="4">NVIDIA-SMI</th>
+                <th colspan="3">Driver Version: {{driver_version}}</th>
+                <th colspan="2">CUDA Version: {{cuda_version}}</th>
+            </tr>
+            <tr>
+                <th>ID</th>
+                <th>GPU Name</th>
+                <th>Fan</th>
+                <th>Temperature</th>
+                <th>Power-Usage</th>
+                <th>Memory-Usage</th>
+                <th>GPU-Util</th>
+                <th>PCI-E Width</th>
+                <th>PCI-E Gen</th>
+            </tr>
+            {% if not gpu_info_list == [] %}
+            {% for g in gpu_info_list%}
+            <tr>
+                <td>{{g.index}}</td>
+                <td>{{g.name}}</td>
+                <td>{{g.fan_speed}}%</td>
+                <td>{{g.temperature_gpu}}C</td>
+                <td>{{g.power_draw}}W / {{g.power_limit}}W</td>
+                <td>{{g.memory_used}}MB / {{g.memory_total}}MB</td>
+                <td>{{g.utilization_gpu}}%</td>
+                <td>{{g.pcie_width_current}}</td>
+                <td>{{g.pcie_gen_current}}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <td colspan="12">No GPU found</td>
+            {% endif %}
+        </table>
     </div>
-    <!-- Upper Right Text -->
-    <!-- Start Blue Title -->
-    <div style="padding: 15px 25px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        background: #163367;
-        color: #FFFFFF;
-        overflow: hidden;
-        line-height: 32px;
-        ">
-        <span style="font-size: 18px;font-weight: bold;">{{main_title}}</span>
+    <br>
+    <h2>Processes:</h2>
+    <div style="overflow-x: auto;">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>GPU</th>
+                <th>Container</th>
+                <th>Start Time</th>
+                <th>Running Time</th>
+                <th>PID(Host)</th>
+                <th>PID(Container)</th>
+                <th>Process Name</th>
+                <th>GPU Memory Usage</th>
+                <th>Main Memory Usage</th>
+                <th>Command</th>
+            </tr>
+            {% if not proc_info_list == [] %}
+            {% for p in proc_info_list%}
+            <tr>
+                <td>{{p.global_index}}</td>
+                <td>{{p.gpu_index}}</td>
+                <td>{{p.container_name}}</td>
+                <td>{{p.proc_start_time}}</td>
+                <td>{{p.proc_running_time}}</td>
+                <td>{{p.pid}}</td>
+                <td>{{p.pid_in_container}}</td>
+                <td>{{p.process_name}}</td>
+                <td>{{p.gpu_memory_used}}MB</td>
+                <td>{{p.main_memory_used}}MB</td>
+                <td>{{p.command}}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <td colspan="12">No running processes found</td>
+            {% endif %}
+        </table>
     </div>
-    <!-- End Blue Title -->
-    <!-- Start rect -->
-    <div style="border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        border:1px solid #ddd;
-        overflow: hidden;
-        padding: 15px 15px 20px; ">
-        <h2>GPUs:</h2>
-        <div style="overflow-x: auto;">
-            <table>
-                <tr>
-                    <th colspan="4">NVIDIA-SMI</th>
-                    <th colspan="3">Driver Version: {{driver_version}}</th>
-                    <th colspan="2">CUDA Version: {{cuda_version}}</th>
-                </tr>
-                <tr>
-                    <th>ID</th>
-                    <th>GPU Name</th>
-                    <th>Fan</th>
-                    <th>Temperature</th>
-                    <th>Power-Usage</th>
-                    <th>Memory-Usage</th>
-                    <th>GPU-Util</th>
-                    <th>PCI-E Width</th>
-                    <th>PCI-E Gen</th>
-                </tr>
-                {% if not gpu_info_list == [] %}
-                {% for g in gpu_info_list%}
-                <tr>
-                    <td>{{g.index}}</td>
-                    <td>{{g.name}}</td>
-                    <td>{{g.fan_speed}}%</td>
-                    <td>{{g.temperature_gpu}}C</td>
-                    <td>{{g.power_draw}}W / {{g.power_limit}}W</td>
-                    <td>{{g.memory_used}}MB / {{g.memory_total}}MB</td>
-                    <td>{{g.utilization_gpu}}%</td>
-                    <td>{{g.pcie_width_current}}</td>
-                    <td>{{g.pcie_gen_current}}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <td colspan="12">No GPU found</td>
-                {% endif %}
-            </table>
-        </div>
-        <br>
-        <h2>Processes:</h2>
-        <div style="overflow-x: auto;">
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>GPU</th>
-                    <th>Container</th>
-                    <th>Start Time</th>
-                    <th>Running Time</th>
-                    <th>PID(Host)</th>
-                    <th>PID(Container)</th>
-                    <th>Process Name</th>
-                    <th>GPU Memory Usage</th>
-                    <th>Main Memory Usage</th>
-                    <th>Command</th>
-                </tr>
-                {% if not proc_info_list == [] %}
-                {% for p in proc_info_list%}
-                <tr>
-                    <td>{{p.global_index}}</td>
-                    <td>{{p.gpu_index}}</td>
-                    <td>{{p.container_name}}</td>
-                    <td>{{p.proc_start_time}}</td>
-                    <td>{{p.proc_running_time}}</td>
-                    <td>{{p.pid}}</td>
-                    <td>{{p.pid_in_container}}</td>
-                    <td>{{p.process_name}}</td>
-                    <td>{{p.gpu_memory_used}}MB</td>
-                    <td>{{p.main_memory_used}}MB</td>
-                    <td>{{p.command}}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <td colspan="12">No running processes found</td>
-                {% endif %}
-            </table>
-        </div>
+    <div style="display: none;">
+        {{err_infos}}
     </div>
-    <!-- End rect -->
 </div>
-<div style="display: none;">
-    {{err_infos}}
-</div>
+<!-- End tables -->
+
