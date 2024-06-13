@@ -15,7 +15,7 @@ This project is a lightweight GPU monitor designed for real-time web-based viewi
 
 ## Getting Start
 ### 1. Clone this repository
-Go to the folder where you want to store your project, and clone the new repository:
+Go to the folder where you want to store your project, and clone this repository:
 ```
 git clone git@github.com:senli1073/Docker-GPU-Monitor.git
 ```
