@@ -15,9 +15,12 @@ _main_title = f"{_page_title} GPU Status".upper()
 
 @app.route("/")
 def index():
+    # Datetime
+    dt = datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y")
     return render_template(
         "index.html",
         page_title=_page_title,
+        ur_text=dt,
         copyright_text=config.conf["copyright_text"],
     )
 

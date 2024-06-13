@@ -45,7 +45,7 @@ function set_status_interval() {
 }
 
 $(function() {
-    get_status();
     get_interval();
+    get_status();
     set_status_interval();
 });
