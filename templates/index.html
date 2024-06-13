@@ -14,22 +14,26 @@
                 margin: 0;
             }
             body {
+                display: flex;
+                flex-direction: column;
                 color: #666; 
                 font-size: 14px; 
                 font-family: 'Open Sans',Helvetica,Arial,sans-serif;
             }
+            .wrapper {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
             .content {
-                min-height: calc(100%-50px);
+                flex: 1;
             }
             .footer {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                position: absolute;
-                bottom: 0;
-                width: 100%;
                 height: 50px; 
-                background-color: #f1f1f1;
+                background-color: rgba(220,220,220,0.5);
                 text-align: center;
             }
             .ball-pulse > div {
@@ -50,46 +54,47 @@
         <title>{{page_title}}</title>
     </head>
     <body>
-        <div id="status_content" class="content">
-            <div  style="width: 90%; margin: 0 auto;  min-width: 200px;">
-                <!-- Upper Right Text -->
-                <div  style="font-size: 14px;
-                    color: #163367;
-                    text-align: right;
-                    padding-top:20px;
-                    padding-right: 20px;
-                    padding-bottom: 10px;">
-                    {{ur_text}}
+        <div class="wrapper">
+            <div id="status_content" class="content">
+                <div style="width: 90%; margin: 0 auto;  min-width: 200px;">
+                    <!-- Upper Right Text -->
+                    <div  style="font-size: 14px;
+                        color: #163367;
+                        text-align: right;
+                        padding-top:20px;
+                        padding-right: 20px;
+                        padding-bottom: 10px;">
+                        {{ur_text}}
+                    </div>
+                    <!-- Upper Right Text -->
+                    <!-- Start Blue Title -->
+                    <div style="padding: 15px 25px;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                        background: #163367;
+                        color: #FFFFFF;
+                        overflow: hidden;
+                        line-height: 32px;
+                        ">
+                        <span style="font-size: 18px;font-weight: bold;"> Loading Data...</span>
+                    </div>
+                    <!-- Start rect -->
+                    <div style="border-bottom-left-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                        border:1px solid #ddd;
+                        overflow: hidden;
+                        padding: 50px 15px 50px 30px; 
+                        text-align: center;
+                        ">
+                        <div class="loader"><div class="ball-pulse"><div></div><div></div><div></div><div></div></div></div>
+                    </div>
+                    <!-- End rect -->
                 </div>
-                <!-- Upper Right Text -->
-                <!-- Start Blue Title -->
-                <div style="padding: 15px 25px;
-                    border-top-left-radius: 10px;
-                    border-top-right-radius: 10px;
-                    background: #163367;
-                    color: #FFFFFF;
-                    overflow: hidden;
-                    line-height: 32px;
-                    ">
-                    <span style="font-size: 18px;font-weight: bold;"> Loading Data...</span>
-                </div>
-                <!-- Start rect -->
-                <div style="border-bottom-left-radius: 10px;
-                    border-bottom-right-radius: 10px;
-                    border:1px solid #ddd;
-                    overflow: hidden;
-                    padding: 50px 15px 50px 30px; 
-                    text-align: center;
-                    ">
-                    <div class="loader"><div class="ball-pulse"><div></div><div></div><div></div><div></div></div></div>
-                </div>
-                <!-- End rect -->
             </div>
+            <!-- Footer-->
+            <footer class="footer">
+                <p>&copy; {{copyright_text}}</p>
+            </footer>
         </div>
-        <!-- Footer-->
-        <footer class="footer">
-            <p>&copy; {{copyright_text}}</p>
-        </footer>
     </body>
-    
 </html>
