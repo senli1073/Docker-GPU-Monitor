@@ -1,30 +1,43 @@
-var interval = 30000;
-var statusInterval;
+let interval = 30000; //Default value
+let statusInterval;
 
-function hide_loader() {
+// Hide loader after getting status
+function hideLoader() {
     document.getElementById("main_title_loading").style.display = "none";
     document.getElementById("main_title_text").style.display = "block"; 
 }
 
-var init_flag = true;
-var content_keys = ["datetime_str", "main_content"];
-function update_content(data) {
-    if (init_flag) {
-        content_keys.forEach(key => {
+let initFlag = true;
+const contentKeys = ["datetime_str", "main_content"];
+
+// Update GPU info and Proc info
+function updateContent(data) {
+    // Init
+    if (initFlag) {
+        contentKeys.forEach(key => {
             $(`#${key}`).fadeOut(200, function() {
                 $(this).html(data[key]).fadeIn(300);
             });
         });
-        hide_loader();
-        init_flag = false;
+        hideLoader();
+        initFlag = false;
     } else {
-        content_keys.forEach(key => {
+        // Keep the scroll bar in its original position after updating data
+        const scroll_gpu_pos = document.getElementById("scroll_gpu").scrollLeft;
+        const scroll_proc_pos = document.getElementById("scroll_proc").scrollLeft;
+        // Update HTML
+        contentKeys.forEach(key => {
             document.getElementById(key).innerHTML = data[key];
         });
+        // Set pos
+        document.getElementById("scroll_gpu").scrollLeft = scroll_gpu_pos;
+        document.getElementById("scroll_proc").scrollLeft = scroll_proc_pos;
+
     }
 }
 
-function get_status() {
+// Request data
+function getStatus() {
     $.ajax({
         type: "post",
         async: true,
@@ -32,8 +45,8 @@ function get_status() {
         dataType: "json",
         success: function(data) {
             if (data) {
-                update_content(data);
-                set_status_interval(data["interval"]);
+                updateContent(data);
+                setStatusInterval(data["interval"]);
             }
         },
         error: function(errorMsg) {
@@ -42,17 +55,20 @@ function get_status() {
     });
 }
 
-function set_status_interval(val) {
+// Set interval
+function setStatusInterval(val) {
     if (val!=interval){
         interval = val;
         if (statusInterval) {
             clearInterval(statusInterval);
         }
-        statusInterval = setInterval(get_status, interval);
+        statusInterval = setInterval(getStatus, interval);
     }
     
 }
 
 $(function() {
-    get_status();
+    setStatusInterval(interval);
+    getStatus();
 });
+
