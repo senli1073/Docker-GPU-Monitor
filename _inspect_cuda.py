@@ -300,7 +300,7 @@ def get_gpus()->Tuple[dict,list]:
             proc_running_time_td = datetime.timedelta(seconds=proc_running_time_sec)
             proc_running_time_str = _strftimedelta(proc_running_time_td)
             proc_start_time_dt = dtparser.parse(proc_start_time_str)
-            proc_start_time_str = proc_start_time_dt.strftime("%Y-%m-%d %H:%M:%S")
+            proc_start_time_str = proc_start_time_dt.strftime("%Y-%m-%d %H:%M:%S" if ":" in proc_start_time_str else "%Y-%m-%d")
         except Exception as e:
             err_infos.append(str(e))
 
