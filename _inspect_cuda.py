@@ -288,7 +288,7 @@ def get_gpus()->Tuple[dict,list]:
         # Process start time / running time
         try:
             stdout = sp.check_output(
-                ["ps", "-o", "etimes=", "-o", "start=", "-p", f"{pid}"]
+                ["ps", "-o", "etimes=", "-o", "lstart=", "-p", f"{pid}"]
             )
             proc_time_str = stdout.decode("utf-8").strip()
             split_idx = proc_time_str.find(" ")
@@ -300,7 +300,7 @@ def get_gpus()->Tuple[dict,list]:
             proc_running_time_td = datetime.timedelta(seconds=proc_running_time_sec)
             proc_running_time_str = _strftimedelta(proc_running_time_td)
             proc_start_time_dt = dtparser.parse(proc_start_time_str)
-            proc_start_time_str = proc_start_time_dt.strftime("%Y-%m-%d %H:%M:%S" if ":" in proc_start_time_str else "%Y-%m-%d")
+            proc_start_time_str = proc_start_time_dt.strftime("%Y-%m-%d %H:%M:%S")
         except Exception as e:
             err_infos.append(str(e))
 
