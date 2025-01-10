@@ -1,0 +1,28 @@
+<div style="border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border:1px solid #ddd;
+    overflow: hidden;
+    padding: 15px 15px 20px; ">
+    <h2>提醒</h2>
+
+    <div id="version-notice">
+        您的版本已过期，页面将在 <span id="countdown">8</span> 秒后自动刷新。
+    </div>
+
+    <script>
+        let countdown = 8;
+        const notice = document.getElementById('version-notice');
+        notice.style.display = 'block';
+        const countdownElement = document.getElementById('countdown');
+        countdownElement.textContent = countdown;
+        const interval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(interval);
+                window.location.reload(true);
+            }
+        }, 1000);
+
+    </script>
+</div>

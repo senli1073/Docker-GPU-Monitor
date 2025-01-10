@@ -1,14 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, make_response, request
 import datetime
 import platform
 import json
-from flask_sslify import SSLify
+import packaging
+import packaging.version
 from _inspect_cuda import get_gpus
 import config
 
 
 app = Flask(__name__)
-# sslify = SSLify(app)
 
 @app.route("/")
 def index():
@@ -17,12 +17,10 @@ def index():
 
     # Host name
     page_title = platform.node()
-    main_title = f"{page_title} GPU Status".upper()
 
     return render_template(
         "index.html",
         page_title=page_title,
-        main_title=main_title,
         datetime_str=dt_str,
         copyright_text=config.conf["copyright_text"],
     )
@@ -30,9 +28,32 @@ def index():
 
 @app.route("/status", methods=["POST"])
 def status():
-
     # Datetime
     dt_str = datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y")
+
+    # Main title
+    page_title = platform.node()
+    main_title = f"{page_title} GPU Monitor".upper()
+
+    try:
+        frontend_version = request.form['version']
+        f_v = packaging.version.parse(frontend_version)
+        b_v = packaging.version.parse(config.conf["version"])
+    except:
+        f_v = b_v = None
+
+    if not (f_v and b_v and (f_v==b_v)):
+        return_data = {
+            "expired":True,
+            "main_title_text" : main_title,
+            "requestInterval":int(1e8),
+            "sleepInterval":int(1e8),
+            "datetime_str": dt_str,
+            "main_content" : render_template("expired.html"),
+            
+        }
+        response = make_response(json.dumps(return_data))
+        return response
 
     # Get GPUs
     gpu_objects_dict, err_infos = get_gpus()
@@ -55,8 +76,10 @@ def status():
         proc_info_list[i].global_index = i
 
     return_data = {
-        "requestInterval":config.conf["request_interval_ms"],
-        "sleepInterval":config.conf["sleep_interval_ms"],
+        "expired":False,
+        "main_title_text" : main_title,
+        "request_interval":config.conf["request_interval_ms"],
+        "sleep_interval":config.conf["sleep_interval_ms"],
         "datetime_str": dt_str,
         "main_content" : render_template("status.html",
                                 driver_version=driver_version,
@@ -65,8 +88,13 @@ def status():
                                 proc_info_list=proc_info_list,
                                 err_infos=err_infos)
     }
+    response = make_response(json.dumps(return_data))
 
-    return json.dumps(return_data)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    return response
 
 
 

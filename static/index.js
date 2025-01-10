@@ -1,38 +1,62 @@
+
+const FRONTEND_VERSION = '2.0.3';
+
 const requestIntervalDefault = 30 * 1000; // Default value for status requests (30 seconds)
 const sleepIntervalDefault = 10 * 60 * 1000; // Default value for sleep mode (10 minutes)
 let requestInterval = requestIntervalDefault;
 let sleepInterval = sleepIntervalDefault;
+
 let statusInterval; // Interval object
 let sleepTimer; // Timer object
 
-// Hide loader after getting status
+// Initializing
+let initFlag = true
+
+// Loader
+let loadingFlag = true;
+function showLoader() {
+    $("#main_title_text").fadeOut(200, function () {
+        $(this).html("Loading Data ...").fadeIn(300);
+    });
+    $("#main_content").fadeOut(200, function () {
+        $(this).html("");
+    });
+    document.getElementById("loader").style.display = "block";
+    loadingFlag = true;
+}
 function hideLoader() {
-    document.getElementById("main_title_loading").style.display = "none";
-    document.getElementById("main_title_text").style.display = "block";
+    document.getElementById("loader").style.display = "none";
+    loadingFlag = false;
 }
 
-let initFlag = true;
-const contentKeys = ["datetime_str", "main_content"];
+// Elemtent IDs
+const contentKeys = ["main_title_text","datetime_str", "main_content"];
+
+// Update contents 
+function updateContents(data) {
+    contentKeys.forEach(key => {
+        document.getElementById(key).innerHTML = data[key];
+    });
+}
+function updateContentsWithFade(data) {
+    contentKeys.forEach(key => {
+        $(`#${key}`).fadeOut(200, function () {
+            $(this).html(data[key]).fadeIn(300);
+        });
+    });
+}
 
 // Update GPU info and Proc info
-function updateContent(data) {
-    // Init
-    if (initFlag) {
-        contentKeys.forEach(key => {
-            $(`#${key}`).fadeOut(200, function () {
-                $(this).html(data[key]).fadeIn(300);
-            });
-        });
-        hideLoader();
-        initFlag = false;
+function updateGPUStatus(data) {
+    // Initialize
+    if (loadingFlag) {
+        updateContentsWithFade(data);
     } else {
         // Keep the scroll bar in its original position after updating data
         const scroll_gpu_pos = document.getElementById("scroll_gpu").scrollLeft;
         const scroll_proc_pos = document.getElementById("scroll_proc").scrollLeft;
         // Update HTML
-        contentKeys.forEach(key => {
-            document.getElementById(key).innerHTML = data[key];
-        });
+        updateContents(data);
         // Set pos
         document.getElementById("scroll_gpu").scrollLeft = scroll_gpu_pos;
         document.getElementById("scroll_proc").scrollLeft = scroll_proc_pos;
@@ -45,16 +69,26 @@ function getStatus() {
         type: "post",
         async: true,
         url: "/status",
+        data: { version: FRONTEND_VERSION },
         dataType: "json",
         success: function (data) {
             if (data) {
-                updateContent(data);
-                setRequestInterval(data["requestInterval"]); // Update status request interval
-                setSleepInterval(data["sleepInterval"]); // Update sleep interval if provided
+                if (data["expired"]){
+                    updateContentsWithFade(data);
+                    clearInterval(statusInterval);
+                } else {
+                    updateGPUStatus(data);
+                    setRequestInterval(data["request_interval"]); // Update status request interval
+                    setSleepInterval(data["sleep_interval"]); // Update sleep interval if provided
+                }
+                hideLoader();
+            } else {
+                showLoader();
             }
         },
         error: function (errorMsg) {
             console.log(errorMsg);
+            showLoader();
         }
     });
 }
@@ -73,6 +107,7 @@ function setRequestInterval(val) {
 function resetRequestInterval() {
     clearInterval(statusInterval);
     statusInterval = setInterval(getStatus, requestInterval);
+    getStatus();
 }
 
 // Set sleep interval 
@@ -123,8 +158,7 @@ function resumeRequests() {
 
 // Initialize
 $(function () {
-    setRequestInterval(requestInterval);
-    getStatus();
+    resetRequestInterval();
     resetSleepTimer();
 });
 
