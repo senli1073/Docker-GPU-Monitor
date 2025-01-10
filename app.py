@@ -2,12 +2,13 @@ from flask import Flask, render_template
 import datetime
 import platform
 import json
+from flask_sslify import SSLify
 from _inspect_cuda import get_gpus
 import config
 
 
 app = Flask(__name__)
-
+# sslify = SSLify(app)
 
 @app.route("/")
 def index():
@@ -54,7 +55,8 @@ def status():
         proc_info_list[i].global_index = i
 
     return_data = {
-        "interval": config.conf["interval_ms"],
+        "requestInterval":config.conf["request_interval_ms"],
+        "sleepInterval":config.conf["sleep_interval_ms"],
         "datetime_str": dt_str,
         "main_content" : render_template("status.html",
                                 driver_version=driver_version,
@@ -69,4 +71,8 @@ def status():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=config.conf["port"], debug=True, threaded=True)
+    app.run(host="0.0.0.0", port=config.conf["port"],
+            #ssl_context=('cert.pem', 'key.pem'),
+            #ssl_context='adhoc',
+            debug=True, 
+            threaded=True)

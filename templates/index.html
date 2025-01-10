@@ -1,106 +1,160 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta charset="UTF-8">
-        <link rel="icon" type="image/x-icon" href="static/assets/favicon.ico" />
-        <link rel="stylesheet" type="text/css" href="static/loaders.min.css">
-        <script type="text/javascript" src="static/jquery-3.7.1.min.js"></script>
-        <script type="text/javascript" src="static/index.js"></script>
-        <style>
-            html, body {
-                height: 100%;
-                margin: 0;
-            }
-            body {
-                display: flex;
-                flex-direction: column;
-                color: #666; 
-                font-size: 14px; 
-                font-family: 'Open Sans',Helvetica,Arial,sans-serif;
-            }
-            .wrapper {
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-            }
-            .content {
-                flex: 1;
-            }
-            .footer {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 50px; 
-                background-color: rgba(220,220,220,0.5);
-                text-align: center;
-            }
-            .ball-pulse > div {
-                background-color: #163367;
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/assets/favicon.ico">
+    <link rel="stylesheet" href="static/loaders.min.css">
+    <script src="static/jquery-3.7.1.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            color: #666;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            transition: filter 0.5s ease;
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .content {
+            flex: 1;
+        }
+        .footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            background-color: rgba(220,220,220,0.5);
+            text-align: center;
+        }
+        .ball-pulse > div {
+            background-color: #163367;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .scrollable {
+            overflow-x: auto;
+        }
+        #status_content {
+            transition: filter 0.8s ease;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            pointer-events: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.05);
+            z-index: 999;
+        }
+        
+        .sleep-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 1000;
+        }
+        .sleep-modal button {
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 400;
+            color: #fff;
+            text-align: center;
+            vertical-align: middle;
+            user-select: none;
+            background-color: #007bff;
+            border: 1px solid #007bff;
+            padding: 0.4rem 4rem;
+            font-size: 1.0 rem;
+            line-height: 1.5;
+            border-radius: 0.3rem; 
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+            &:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
             }
 
-            table {
-                border-collapse: collapse;
-                width: 100%;
-                border: 1px solid #ddd;
+
+            &:focus,
+            &.focus {
+                background-color: #0069d9;
+                border-color: #0062cc;
+                box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
             }
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
+
+            &:disabled,
+            &.disabled {
+                background-color: #007bff;
+                border-color: #007bff;
+                opacity: 0.65;
             }
-            .scrollable {
-                overflow-x: auto;
-            }
-        </style>
-        <title>{{page_title}}</title>
-    </head>
-    <body>
-        <div class="wrapper">
-            <div id="status_content" class="content">
-                <div style="width: 90%; margin: 0 auto;  min-width: 200px;">
-                    <!-- Datetime -->
-                    <div  id="datetime_str"
-                        style="font-size: 14px;
-                        color: #163367;
-                        text-align: right;
-                        padding-top:20px;
-                        padding-right: 20px;
-                        padding-bottom: 10px;">
-                        {{datetime_str}}
-                    </div>
-                    <!-- Datetime -->
-                    <!-- Start Blue Title -->
-                    <div style="padding: 15px 25px;
-                        border-top-left-radius: 10px;
-                        border-top-right-radius: 10px;
-                        background: #163367;
-                        color: #FFFFFF;
-                        overflow: hidden;
-                        line-height: 32px;
-                        ">
-                        <span id="main_title_loading" style="font-size: 18px;font-weight: bold; display: block;"> Loading Data ...</span>
-                        <span id="main_title_text" style="font-size: 18px;font-weight: bold; display: none;">{{main_title}}</span>
-                    </div>
-                    <!-- Start tables -->
-                    <div id="main_content"
-                        style="border-bottom-left-radius: 10px;
-                        border-bottom-right-radius: 10px;
-                        border:1px solid #ddd;
-                        overflow: hidden;
-                        padding: 15px 15px 15px 15px; ">
-                        <div style="width: 100%; padding: 50px 0px 50px 0px; text-align: center;">
-                            <div class="loader"><div class="ball-pulse"><div></div><div></div><div></div><div></div></div></div>
+        }
+    </style>
+    <title>{{page_title}}</title>
+</head>
+<body>
+    <div id="content_wrapper" class="wrapper">
+        <div class="overlay" id="overlay"></div>
+        <div class="sleep-modal" id="sleepModal">
+            <p>页面已进入休眠状态，点击继续以恢复。</p>
+            <button id="resumeButton">继续</button>
+        </div>
+        <div id="status_content" class="content">
+            <div style="width: 90%; margin: 0 auto; min-width: 200px;">
+                <!-- Datetime -->
+                <div id="datetime_str" style="font-size: 14px; color: #163367; text-align: right; padding-top: 20px; padding-right: 20px; padding-bottom: 10px;">
+                    {{datetime_str}}
+                </div>
+                <!-- Start Blue Title -->
+                <div style="padding: 15px 25px; border-top-left-radius: 10px; border-top-right-radius: 10px; background: #163367; color: #FFFFFF; overflow: hidden; line-height: 32px;">
+                    <span id="main_title_loading" style="font-size: 18px; font-weight: bold; display: block;">Loading Data ...</span>
+                    <span id="main_title_text" style="font-size: 18px; font-weight: bold; display: none;">{{main_title}}</span>
+                </div>
+                <!-- Start tables -->
+                <div id="main_content" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border: 1px solid #ddd; overflow: hidden; padding: 15px;">
+                    <div style="width: 100%; padding: 50px 0; text-align: center;">
+                        <div class="loader">
+                            <div class="ball-pulse">
+                                <div></div><div></div><div></div><div></div>
+                            </div>
                         </div>
                     </div>
-                    <!-- End tables -->
                 </div>
+                <!-- End tables -->
             </div>
-            <!-- Footer-->
-            <footer class="footer">
-                <p>&copy; {{copyright_text}}</p>
-            </footer>
         </div>
-    </body>
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; {{copyright_text}}</p>
+        </footer>
+    </div>
+    <script src="static/index.js"></script>
+</body>
 </html>
