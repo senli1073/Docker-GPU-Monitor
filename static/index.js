@@ -2,8 +2,8 @@ const requestIntervalDefault = 30 * 1000; // Default value for status requests (
 const sleepIntervalDefault = 10 * 60 * 1000; // Default value for sleep mode (10 minutes)
 let requestInterval = requestIntervalDefault;
 let sleepInterval = sleepIntervalDefault;
-let statusInterval;
-let sleepTimer;
+let statusInterval; // Interval object
+let sleepTimer; // Timer object
 
 // Hide loader after getting status
 function hideLoader() {
@@ -95,7 +95,6 @@ function resetSleepTimer() {
     sleepTimer = setTimeout(enterSleepMode, sleepInterval); // Use dynamic sleepInterval
 }
 
-
 // Enter sleep mode
 function enterSleepMode() {
     clearInterval(statusInterval);
@@ -121,7 +120,6 @@ function resumeRequests() {
     resetRequestInterval();
     resetSleepTimer();
 }
-
 
 // Initialize
 $(function () {
