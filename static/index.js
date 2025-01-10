@@ -118,7 +118,7 @@ function resumeRequests() {
     overlay.style.opacity = '0';
     sleepModal.style.display = 'none';
 
-    setStatusInterval(interval);
+    resetRequestInterval();
     resetSleepTimer();
 }
 
