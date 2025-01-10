@@ -100,9 +100,14 @@ function setRequestInterval(val) {
             requestInterval = val;
             clearInterval(statusInterval);
             statusInterval = setInterval(getStatus, requestInterval);
-        }
+        } 
+    } else {
+        console.log("Got invalid value, use default value of 'requestInterval'.")
+        requestInterval = requestIntervalDefault;
+        resetRequestInterval();
     }
 }
+
 // Reset sleep timer
 function resetRequestInterval() {
     clearInterval(statusInterval);
@@ -119,9 +124,10 @@ function setSleepInterval(val) {
             resetSleepTimer(); // Reset the sleep timer with the new interval
         }
     } else {
-        console.log("Got invalid value, use default 'sleepInterval'.")
+        console.log("Got invalid value, use default value of 'sleepInterval'.")
+        sleepInterval = sleepIntervalDefault;
+        resetSleepTimer(); 
     }
-    
 }
 
 // Reset sleep timer
