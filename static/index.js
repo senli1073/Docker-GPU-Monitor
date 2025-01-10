@@ -9,9 +9,6 @@ let sleepInterval = sleepIntervalDefault;
 let statusInterval; // Interval object
 let sleepTimer; // Timer object
 
-// Initializing
-let initFlag = true
-
 // Loader
 let loadingFlag = true;
 function showLoader() {
