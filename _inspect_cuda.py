@@ -26,20 +26,22 @@ def _safe_int(v):
     try:
         return int(v)
     except Exception as e:
-        if ("N/A" in str(v)) or v is None:
-            return np.nan
+        # if ("N/A" in str(v)) or v is None:
+        #     return np.nan
         print(e)
-        return -1
+        # return -1
+        return np.nan
 
 
 def _safe_float(v):
     try:
         return float(v)
     except Exception as e:
-        if "N/A" in str(v) or v is None:
-            return np.nan
+        # if "N/A" in str(v) or v is None:
+        #     return np.nan
         print(e)
-        return -1.0
+        # return -1.0
+        return np.nan
 
 
 def _strftimedelta(td: datetime.timedelta) -> str:
@@ -272,9 +274,8 @@ def get_gpus()->Tuple[dict,list]:
         pid = proc_vals_dict["pid"]
 
         # Get PID info
-        container_id = container_name = main_memory_used = pid_in_container = (
-            proc_cmd
-        ) = proc_start_time_str = proc_running_time_str = None
+        container_id = container_name = main_memory_used = pid_in_container = proc_cmd \
+            = proc_status = proc_start_time_str = proc_running_time_str = None
         # Container ID
         try:
             stdout = sp.check_output(["cat", f"/proc/{pid}/cgroup"])
@@ -315,7 +316,7 @@ def get_gpus()->Tuple[dict,list]:
             except Exception as e:
                 err_infos.append(str(e))
         else:
-            container_name = "<host>"
+            container_name = "Unknown"
 
         try:
             stdout = sp.check_output(["cat", f"/proc/{pid}/status"])
@@ -358,6 +359,11 @@ def get_gpus()->Tuple[dict,list]:
         proc_vals_dict["pid_in_container"] = pid_in_container
         proc_vals_dict["main_memory_used"] = main_memory_used
         proc_vals_dict["command"] = proc_cmd
+
+        for k in proc_vals_dict:
+            if str(proc_vals_dict[k])==str(None):
+                proc_vals_dict[k] = "Unknown"
+
         gpus_dict[uuid]["processes"][pid] = proc_vals_dict
 
     gpu_objects_dict = {
